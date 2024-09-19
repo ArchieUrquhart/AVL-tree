@@ -7,7 +7,8 @@ class Node:
         self.ballance = 0
 
         self.key = value
-        
+
+
 
 class Avl_Tree:
     def __init__(self):
@@ -24,25 +25,24 @@ class Avl_Tree:
                 return True
 
         return False
-    
+
     def getHeights(self, node):
         lheight = -1
         rheight = -1
 
-        #finds heights of children and updates heights as it goes
+        # finds heights of children and updates heights as it goes
         if node.left != None:
-            #finds height of left sub-tree
+            # finds height of left sub-tree
             lheight = self.getHeights(node.left)
             node.left.height = lheight
         if node.right != None:
-            #finds height of right sub-tree
+            # finds height of right sub-tree
             rheight = self.getHeights(node.right)
             node.right.height = rheight
-        
-        #makes hight equal to height of tallest subtree + 1
-        height = 1 + max(lheight,rheight)
-        return height
 
+        # makes hight equal to height of tallest subtree + 1
+        height = 1 + max(lheight, rheight)
+        return height
 
     def fixBals(self, node):
         bal = node.left.height - node.right.height
@@ -52,20 +52,17 @@ class Avl_Tree:
         elif bal < -1:
             self.rotLeft(node)
 
-
-
     def insert(self, node):
         if self.inTree(node.key):
             print(f"{node.key} is already in the tree")
             return -1
-
 
         if self.root == None:
             self.root = node
         else:
             targ = self.root
 
-            #gets inserted nodes parent by finding leaf node colsest in value
+            # gets inserted nodes parent by finding leaf node colsest in value
             while targ != None:
                 parent = targ
                 if node.key <= targ.key:
@@ -73,54 +70,74 @@ class Avl_Tree:
                 else:
                     targ = targ.right
 
-            #puts node into tree
+            # puts node into tree
             node.parent = parent
 
             if node.key <= parent.key:
                 parent.left = node
             else:
                 parent.right = node
-        
+
             self.root.height = self.getHeights(self.root)
 
-
-    
     def delete(self, key):
         pass
 
-
     def min(self):
         node = self.root
-        while node.left != None:
+        while node.left:
             node = node.left
 
         return node.key
 
     def max(self):
         node = self.root
-        while node.right != None:
+        while node.right:
             node = node.right
 
         return node.key
-        
 
-    def displayASC(self, node):
-        if node != None:
-            self.displayASC(node.left)
-            print(node.key, node.height)
-            self.displayASC(node.right)
+    def displayASC(self):
+        stack = []
+        node = self.root
+        done = False
+        while not done:
+            if node:
+                stack.append(node)
+                node = node.left
 
-    def displayDESC(self, node):
-        if node != None:
-            self.displayASC(node.right)
-            print(node.key, node.height)
-            self.displayASC(node.left)
+            elif stack:
+                node = stack.pop()
+                print(f"{node.key}  {node.height}")
+
+                node = node.right
+
+            else:
+                return None
 
 
+
+
+
+    def displayDESC(self):
+        stack = []
+        node = self.root
+        while True:
+            if node:
+                stack.append(node)
+                node = node.right
+
+            elif stack:
+                node = stack.pop()
+                print(f"{node.key}  {node.height}")
+
+                node = node.left
+
+            else:
+                return None
 
 
 tree = Avl_Tree()
-
 
 tree.insert(Node(10))
 tree.insert(Node(1))
@@ -132,4 +149,4 @@ tree.insert(Node(50))
 tree.insert(Node(-3))
 tree.insert(Node(1))
 
-tree.displayASC(tree.root)
+tree.displayASC()
